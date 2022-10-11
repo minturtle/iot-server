@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+  mysql-db:
+    build: ./db/.
+    ports:
+      - "3306:3306"
+    environment:
+      - TZ=Asia/Seoul
+  front:
+    build: ./client/.
+    ports:
+      - "3000:3000"
+  back:
+    build: ./server/.
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mysql-db
+    command: ["./wait-for-it/wait-for-it.sh","-t","30" ,"mysql-db:3306", "--", "node", "index.js"]
